@@ -42,7 +42,7 @@ public class account {
 		String nam;
 		transactionhistry f=new transactionhistry();
 		transaction d=new transaction();
-		dataacessprovider b=new dataacessprovider();
+		IDataAccess b=DataAccessProvider.getDataAccess();
 		do
 		{
 			menu();
