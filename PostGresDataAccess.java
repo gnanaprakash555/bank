@@ -26,4 +26,16 @@ public class PostGresDataAccess implements IDataAccess{
 		
 	}
 
+	@Override
+	public void histry(String id) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void transfer(int amt, String a) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

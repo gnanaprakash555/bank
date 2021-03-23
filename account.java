@@ -40,8 +40,7 @@ public class account {
 		int amt,opt;
 		String age,dob,adharno,phno,emailid;
 		String nam;
-		transactionhistry f=new transactionhistry();
-		transaction d=new transaction();
+		
 		IDataAccess b=DataAccessProvider.getDataAccess();
 		do
 		{
@@ -69,12 +68,12 @@ public class account {
 				break;
 			
 			case 5:
-				f.histry(h);
+				b.histry(h);
 				break;
 			case 6:
 				System.out.println("enter the amount to be transfer");
 				amt=sc.nextInt();
-				d.transfer(amt,h);
+				b.transfer(amt,h);
 				break;
 			}
 		}while(opt!=0);
