@@ -514,7 +514,7 @@ public class SqlDataAccess {
 					System.out.println("YOUR PHONE_NO UPDATED SUCCESSFULLY");
 					break;
 				case 6:
-					s = c.prepareStatement("update accounts set email_id=? where id=?");
+					s = c.prepareStatement("update accounts set email=? where id=?");
 					System.out.println("ENTER YOUR EMAIL_ID");
 					email = sc.next();
 					s.setString(1, email);
@@ -582,7 +582,7 @@ public class SqlDataAccess {
 			c.setAutoCommit(false);
 			stmt1 = c.createStatement();
 			stmt2 = c.createStatement();
-			rs1 = stmt1.executeQuery("SELECT * FROM transaction_history;");
+			
 			int opt;
 			do {
 				menu1();
@@ -590,7 +590,7 @@ public class SqlDataAccess {
 
 				switch (opt) {
 				case 1:
-
+					rs1 = stmt1.executeQuery("SELECT * FROM transaction_history;");
 					while (rs1.next()) {
 						int id = rs1.getInt("accounts_id");
 						String type = rs1.getString("type");
@@ -607,7 +607,7 @@ public class SqlDataAccess {
 					}
 					break;
 				case 2:
-
+					rs1 = stmt1.executeQuery("SELECT * FROM transaction_history;");
 					while (rs1.next()) {
 						int id = rs1.getInt("accounts_id");
 						String type = rs1.getString("type");
@@ -624,7 +624,7 @@ public class SqlDataAccess {
 					}
 					break;
 				case 3:
-
+					rs1 = stmt1.executeQuery("SELECT * FROM transaction_history;");
 					while (rs1.next()) {
 						int id = rs1.getInt("accounts_id");
 						String type = rs1.getString("type");
@@ -654,7 +654,7 @@ public class SqlDataAccess {
 					}
 					break;
 				case 4:
-
+					rs1 = stmt1.executeQuery("SELECT * FROM transaction_history;");
 					while (rs1.next()) {
 						int id = rs1.getInt("accounts_id");
 
@@ -714,7 +714,7 @@ public class SqlDataAccess {
 
 	public static void main(String[] args) throws Exception {
 
-		transactionHistory(1);
+		display(3);
 	}
 
 }
