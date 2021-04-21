@@ -50,11 +50,11 @@ public class SqlDataAccess {
 					System.out.println("EMAIL= " + email);
 					System.out.println("IFSC = " + ifsc);
 					System.out.println("AMOUNT = " + amount);
+					
 					break;
 				}
-
 			}
-
+			c.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -62,7 +62,6 @@ public class SqlDataAccess {
 		} finally {
 			rs.close();
 			stmt.close();
-			c.commit();
 			c.close();
 		}
 
@@ -108,6 +107,7 @@ public class SqlDataAccess {
 			pt.setString(9, pass);
 			pt.setLong(10, 0);
 			pt.executeUpdate();
+			c.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -115,7 +115,6 @@ public class SqlDataAccess {
 		} finally {
 			pt.close();
 			stmt.close();
-			c.commit();
 			c.close();
 		}
 		System.out.println("ACCOUNT CREATED SUCCESSFULLY");
@@ -159,7 +158,7 @@ public class SqlDataAccess {
 				}
 
 			}
-
+			c.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -169,7 +168,6 @@ public class SqlDataAccess {
 			pt.close();
 			rs.close();
 			stmt.close();
-			c.commit();
 			c.close();
 		}
 		System.out.println("DEPOSITED SUCCESSFULLY");
@@ -209,7 +207,7 @@ public class SqlDataAccess {
 				}
 
 			}
-
+			c.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -219,7 +217,6 @@ public class SqlDataAccess {
 			pt.close();
 			rs.close();
 			stmt.close();
-			c.commit();
 			c.close();
 		}
 
@@ -257,6 +254,7 @@ public class SqlDataAccess {
 
 			s2.executeUpdate();
 			s1.executeUpdate();
+			c.commit();
 
 		}
 
@@ -270,7 +268,6 @@ public class SqlDataAccess {
 			s2.close();
 			rs.close();
 			stmt.close();
-			c.commit();
 			c.close();
 
 		}
@@ -405,7 +402,7 @@ public class SqlDataAccess {
 					System.out.println("INCORRECT PASSWORD");
 				}
 			} while (a_ifsc.equals(ifsc) == false);
-
+			c.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -425,24 +422,12 @@ public class SqlDataAccess {
 			st2.close();
 			st3.close();
 			st4.close();
-			c.commit();
 			c.close();
 		}
 		System.out.println("AMOUNT TRANSFERED SUCCESSFULLY");
 	}
 
-	static void menu() {
-		System.out.println("PRESS 1 FOR EDITING NAME");
-		System.out.println("PRESS 2 FOR EDITING AGE");
-		System.out.println("PRESS 3 FOR EDITING DOB");
-		System.out.println("PRESS 4 FOR EDITING AADHAR_NO");
-		System.out.println("PRESS 5 FOR EDITING PHONE_NO");
-		System.out.println("PRESS 6 FOR EDITING EMAIL_ID");
-		System.out.println("PRESS 7 FOR EDITING IFSC_CODE");
-		System.out.println("PRESS 0 FOR Exit");
-
-	}
-
+	
 	static public void editAccount(int a_id) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		Connection c = null;
@@ -459,7 +444,7 @@ public class SqlDataAccess {
 
 			int opt;
 			do {
-				menu();
+				accountMenu.menu();
 				opt = sc.nextInt();
 
 				switch (opt) {
@@ -545,7 +530,7 @@ public class SqlDataAccess {
 					break;
 				}
 			} while (opt != 0);
-
+			c.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -553,18 +538,8 @@ public class SqlDataAccess {
 		} finally {
 			s.close();
 			stmt.close();
-			c.commit();
 			c.close();
 		}
-
-	}
-
-	public static void menu1() {
-		System.out.println(" PRESS 1 FOR DEPOSIT HISTRY");
-		System.out.println(" PRESS 2 FOR WITHDRAWN HISTRY");
-		System.out.println(" PRESS 3 FOR TRANSFER HISTRY");
-		System.out.println(" PRESS 4 FOR TOTAL HISTRY");
-		System.out.println(" PRESS 0 FOR EXIT");
 
 	}
 
@@ -582,10 +557,11 @@ public class SqlDataAccess {
 			c.setAutoCommit(false);
 			stmt1 = c.createStatement();
 			stmt2 = c.createStatement();
+		
 			
 			int opt;
 			do {
-				menu1();
+				accountMenu.menu1();
 				opt = sc.nextInt();
 
 				switch (opt) {
@@ -698,7 +674,7 @@ public class SqlDataAccess {
 					break;
 				}
 			} while (opt != 0);
-
+			c.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -707,14 +683,13 @@ public class SqlDataAccess {
 			rs1.close();
 			stmt1.close();
 			stmt2.close();
-			c.commit();
 			c.close();
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
 
-		display(3);
+		transactionHistory(3);
 	}
 
 }
