@@ -1,10 +1,19 @@
 package bank;
 
 public interface IDataAccess {
-	public void display(String s) throws Exception;
-	public void update(String s) throws Exception;
-	public void deposit(int amt,String s) throws Exception;
-	public void withdraw(int amt,String s) throws Exception;
-	public void histry(String id) throws Exception;
-	public void transfer(int amt,String a) throws Exception;
+	public void display(int a_id) throws Exception;
+
+	public void createAccount(int id1) throws Exception;
+
+	public void deposit(int a_id, int amt) throws Exception;
+
+	public void withdraw(int a_id, int amt) throws Exception;
+
+	public void deleteAccount(int id) throws Exception;
+
+	public void transferAccount(int id1, int id2, int amt) throws Exception;
+
+	public void editAccount(int a_id) throws Exception;
+
+	public void transactionHistory(int a_id) throws Exception;
 }

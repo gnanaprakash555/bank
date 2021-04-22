@@ -5,7 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import java.util.*;
 import java.text.SimpleDateFormat;
-public class FileDataAccess implements IDataAccess{
+public class FileDataAccess {
 	int amount;
 	static String s;
 	static JSONObject idno;

@@ -20,6 +20,21 @@ public class accountMenu {
 		System.out.println(" PRESS 0 FOR EXIT");
 
 	}
+	 static void menu3()
+	    {
+	        System.out.println("PRESS 1 FOR VIEW PROFILE");
+	        System.out.println("PRESS 2 FOR DEPOSIT");
+	        System.out.println("PRESS 3 FOR WITHDRAW");
+	        System.out.println("PRESS 4 FOR DELETE ACCOUNT");
+	        System.out.println("PRESS 5 FOR TRANSFER ACCOUNT");
+	        System.out.println("press 6 FOR EDIT ACCOUNT");
+	        System.out.println("press 7 FOR TRANSACTION HISTORY");
+	        System.out.println("press 8 FOR CREATE ACCOUNT");
+	        System.out.println("PRESS 0 FOR EXIT");
+	        
+	    }
+	
+	
 
 	public static void main(String[] args) {
 		

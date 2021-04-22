@@ -1,4 +1,5 @@
 package bank;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,7 +8,8 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
-public class SqlDataAccess {
+
+public class SqlDataAccess implements IDataAccess {
 	static long transfer_id;
 	static String name;
 	static int age;
@@ -21,7 +23,7 @@ public class SqlDataAccess {
 	static long t_id;
 	static long amount = 0;
 
-	static public void display(int a_id) throws Exception {
+	public void display(int a_id) throws Exception {
 		Connection c = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -50,7 +52,7 @@ public class SqlDataAccess {
 					System.out.println("EMAIL= " + email);
 					System.out.println("IFSC = " + ifsc);
 					System.out.println("AMOUNT = " + amount);
-					
+
 					break;
 				}
 			}
@@ -60,14 +62,26 @@ public class SqlDataAccess {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		} finally {
-			rs.close();
-			stmt.close();
-			c.close();
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (c != null) {
+					c.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
 		}
 
 	}
 
-	static public void createAccount(int id1) throws Exception {
+	public void createAccount(int id1) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		Connection c = null;
 		Statement stmt = null;
@@ -113,15 +127,27 @@ public class SqlDataAccess {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		} finally {
-			pt.close();
-			stmt.close();
-			c.close();
+			try {
+				if (pt != null) {
+					pt.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (c != null) {
+					c.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
 		}
 		System.out.println("ACCOUNT CREATED SUCCESSFULLY");
 
 	}
 
-	static public void deposit(int a_id, int amt) throws Exception {
+	public void deposit(int a_id, int amt) throws Exception {
 
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		Date date = new Date();
@@ -164,16 +190,33 @@ public class SqlDataAccess {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		} finally {
-			s.close();
-			pt.close();
-			rs.close();
-			stmt.close();
-			c.close();
+
+			try {
+				if (s != null) {
+					s.close();
+				}
+				if (pt != null) {
+					pt.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (c != null) {
+					c.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
 		}
 		System.out.println("DEPOSITED SUCCESSFULLY");
 	}
 
-	static public void withdraw(int a_id, int amt) throws Exception {
+	public void withdraw(int a_id, int amt) throws Exception {
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		Date date = new Date();
 		String m = String.valueOf(formatter.format(date));
@@ -213,18 +256,35 @@ public class SqlDataAccess {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		} finally {
-			s.close();
-			pt.close();
-			rs.close();
-			stmt.close();
-			c.close();
+
+			try {
+				if (s != null) {
+					s.close();
+				}
+				if (pt != null) {
+					pt.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (c != null) {
+					c.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
 		}
 
 		System.out.println("AMOUNT WITHDRAWN  SUCCESSFULLY");
 
 	}
 
-	static public void deleteAccount(int id) throws Exception {
+	public void deleteAccount(int id) throws Exception {
 		Connection c = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -263,18 +323,37 @@ public class SqlDataAccess {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		} finally {
-			s.close();
-			s1.close();
-			s2.close();
-			rs.close();
-			stmt.close();
-			c.close();
+
+			try {
+				if (s != null) {
+					s.close();
+				}
+				if (s1 != null) {
+					s1.close();
+				}
+				if (s2 != null) {
+					s2.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (c != null) {
+					c.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
 
 		}
 		System.out.println("ACCOUNT DELETED SUCCESSFULLY");
 	}
 
-	static public void transferAccount(int id1, int id2, int amt) throws Exception {
+	public void transferAccount(int id1, int id2, int amt) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		Date date = new Date();
@@ -408,27 +487,64 @@ public class SqlDataAccess {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		} finally {
-			s.close();
-			s1.close();
-			pt.close();
-			pt1.close();
-			p.close();
-			p1.close();
-			rs1.close();
-			rs2.close();
-			rs3.close();
-			rs4.close();
-			st1.close();
-			st2.close();
-			st3.close();
-			st4.close();
-			c.close();
+
+			try {
+				if (s != null) {
+					s.close();
+				}
+				if (s1 != null) {
+					s1.close();
+				}
+				if (pt != null) {
+					pt.close();
+				}
+				if (pt1 != null) {
+					pt1.close();
+				}
+				if (p != null) {
+					p.close();
+				}
+				if (p1 != null) {
+					p1.close();
+				}
+				if (rs1 != null) {
+					rs1.close();
+				}
+				if (rs2 != null) {
+					rs2.close();
+				}
+				if (rs3 != null) {
+					rs3.close();
+				}
+				if (rs4 != null) {
+					rs4.close();
+				}
+				if (st1 != null) {
+					st1.close();
+				}
+				if (st2 != null) {
+					st2.close();
+				}
+				if (st3 != null) {
+					st3.close();
+				}
+				if (st4 != null) {
+					st4.close();
+				}
+				if (c != null) {
+					c.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+
 		}
 		System.out.println("AMOUNT TRANSFERED SUCCESSFULLY");
 	}
 
-	
-	static public void editAccount(int a_id) throws Exception {
+	public void editAccount(int a_id) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		Connection c = null;
 
@@ -539,26 +655,39 @@ public class SqlDataAccess {
 			s.close();
 			stmt.close();
 			c.close();
+			try {
+				if (s != null) {
+					s.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (c != null) {
+					c.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
 		}
 
 	}
 
-	static public void transactionHistory(int a_id) throws Exception {
+	public void transactionHistory(int a_id) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		Connection c = null;
 		Statement stmt1 = null;
 		Statement stmt2 = null;
 		ResultSet rs1 = null;
-		ResultSet rs2 = null;
-		PreparedStatement s3 = null;
+
 		try {
 			Class.forName("org.postgresql.Driver");
 			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/gnanaprakash", "postgres", "root");
 			c.setAutoCommit(false);
 			stmt1 = c.createStatement();
 			stmt2 = c.createStatement();
-		
-			
+
 			int opt;
 			do {
 				accountMenu.menu1();
@@ -566,32 +695,30 @@ public class SqlDataAccess {
 
 				switch (opt) {
 				case 1:
-					rs1 = stmt1.executeQuery("SELECT * FROM transaction_history;");
+					rs1 = stmt1.executeQuery("select *  from transaction_history  \n" + "where type='deposit'");
 					while (rs1.next()) {
 						int id = rs1.getInt("accounts_id");
-						String type = rs1.getString("type");
 
-						if (id == a_id && type.equals("deposit")) {
+						if (id == a_id) {
 							amount = rs1.getLong("amount");
 							String date = rs1.getString("date");
 
 							System.out.println(amount);
 							System.out.println(date);
-							System.out.println(type);
+							System.out.println("deposit");
 
 						}
 					}
 					break;
 				case 2:
-					rs1 = stmt1.executeQuery("SELECT * FROM transaction_history;");
+					rs1 = stmt1.executeQuery("select *  from transaction_history  \n" + "where type='withdraw'");
 					while (rs1.next()) {
 						int id = rs1.getInt("accounts_id");
-						String type = rs1.getString("type");
 
-						if (id == a_id && type.equals("withdraw")) {
+						if (id == a_id) {
 							amount = rs1.getLong("amount");
 							String date = rs1.getString("date");
-
+							String type = rs1.getString("type");
 							System.out.println(amount);
 							System.out.println(date);
 							System.out.println(type);
@@ -600,37 +727,35 @@ public class SqlDataAccess {
 					}
 					break;
 				case 3:
-					rs1 = stmt1.executeQuery("SELECT * FROM transaction_history;");
+					rs1 = stmt1.executeQuery("select accounts_id,amount,type,date,transfer_id,from_id,to_id,status\n"
+							+ "FROM transaction_history  \n" + "RIGHT JOIN transfer_transactions\n"
+							+ "ON transaction_history .transfer_id = transfer_transactions.fetch_id;  ");
 					while (rs1.next()) {
 						int id = rs1.getInt("accounts_id");
 						String type = rs1.getString("type");
 
-						if (id == a_id && type.equals("transfer")) {
+						if (id == a_id) {
 							amount = rs1.getLong("amount");
 							String date = rs1.getString("date");
 							t_id = rs1.getLong("transfer_id");
 							System.out.println("AMOUNT:" + amount);
 							System.out.println("DATE:" + date);
 							System.out.println("TYPE:" + type);
-							s3 = c.prepareStatement("SELECT * FROM transfer_transactions where fetch_id=?");
+							String status = rs1.getString("status");
+							int to_id = rs1.getInt("to_id");
+							int from_id = rs1.getInt("from_id");
+							System.out.println("FROM_ID:" + from_id);
+							System.out.println("TO_ID:" + to_id);
+							System.out.println("STATUS:" + status);
 
-							s3.setLong(1, t_id);
-							rs2 = s3.executeQuery();
-							while (rs2.next()) {
-
-								String status = rs2.getString("status");
-								int to_id = rs2.getInt("to_id");
-								int from_id = rs2.getInt("from_id");
-								System.out.println("FROM_ID:" + from_id);
-								System.out.println("TO_ID:" + to_id);
-								System.out.println("STATUS:" + status);
-
-							}
 						}
 					}
 					break;
 				case 4:
-					rs1 = stmt1.executeQuery("SELECT * FROM transaction_history;");
+					rs1 = stmt1.executeQuery(
+							"SELECT *  \n" + "FROM transaction_history  \n" + "FULL OUTER JOIN transfer_transactions \n"
+									+ "ON transaction_history .transfer_id =transfer_transactions .fetch_id;  ");
+
 					while (rs1.next()) {
 						int id = rs1.getInt("accounts_id");
 
@@ -647,23 +772,16 @@ public class SqlDataAccess {
 							} else {
 								amount = rs1.getLong("amount");
 								String date = rs1.getString("date");
-								t_id = rs1.getLong("transfer_id");
 								System.out.println("AMOUNT:" + amount);
 								System.out.println("DATE:" + date);
 								System.out.println("TYPE:" + type);
-								s3 = c.prepareStatement("SELECT * FROM transfer_transactions where fetch_id=?");
-								s3.setLong(1, t_id);
-								rs2 = s3.executeQuery();
-								while (rs2.next()) {
+								String status = rs1.getString("status");
+								int to_id = rs1.getInt("to_id");
+								int from_id = rs1.getInt("from_id");
+								System.out.println("FROM_ID:" + from_id);
+								System.out.println("TO_ID:" + to_id);
+								System.out.println("STATUS:" + status);
 
-									String status = rs2.getString("status");
-									int to_id = rs2.getInt("to_id");
-									int from_id = rs2.getInt("from_id");
-									System.out.println("FROM_ID:" + from_id);
-									System.out.println("TO_ID:" + to_id);
-									System.out.println("STATUS:" + status);
-
-								}
 							}
 						}
 					}
@@ -684,12 +802,29 @@ public class SqlDataAccess {
 			stmt1.close();
 			stmt2.close();
 			c.close();
+			try {
+				if (rs1 != null) {
+					rs1.close();
+				}
+
+				if (stmt1 != null) {
+					stmt1.close();
+				}
+				if (stmt2 != null) {
+					stmt2.close();
+				}
+				if (c != null) {
+					c.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
-
-		transactionHistory(3);
 	}
 
 }
