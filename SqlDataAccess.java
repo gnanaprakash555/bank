@@ -27,34 +27,36 @@ public class SqlDataAccess implements IDataAccess {
 		Connection c = null;
 		Statement stmt = null;
 		ResultSet rs = null;
+		PreparedStatement pt = null;
 		try {
 			Class.forName("org.postgresql.Driver");
 			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/gnanaprakash", "postgres", "root");
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM accounts;");
+			pt = c.prepareStatement("SELECT * FROM accounts where id=?;");
+			pt.setInt(1, a_id);
+			rs = pt.executeQuery();
 			while (rs.next()) {
-				int id = rs.getInt("id");
-				if (id == a_id) {
-					name = rs.getString("name");
-					age = rs.getInt("age");
-					dob = rs.getString("dob");
-					aadhar = rs.getLong("aadhar_no");
-					phone = rs.getLong("phone_no");
-					email = rs.getString("email");
-					ifsc = rs.getString("ifsc");
-					amount = rs.getInt("amount");
-					System.out.println("NAME= " + name);
-					System.out.println("AGE = " + age);
-					System.out.println("DOB = " + dob);
-					System.out.println("AADHAR_NO = " + aadhar);
-					System.out.println("PHONE_NO= " + phone);
-					System.out.println("EMAIL= " + email);
-					System.out.println("IFSC = " + ifsc);
-					System.out.println("AMOUNT = " + amount);
 
-					break;
-				}
+				name = rs.getString("name");
+				age = rs.getInt("age");
+				dob = rs.getString("dob");
+				aadhar = rs.getLong("aadhar_no");
+				phone = rs.getLong("phone_no");
+				email = rs.getString("email");
+				ifsc = rs.getString("ifsc");
+				amount = rs.getInt("amount");
+				System.out.println("NAME= " + name);
+				System.out.println("AGE = " + age);
+				System.out.println("DOB = " + dob);
+				System.out.println("AADHAR_NO = " + aadhar);
+				System.out.println("PHONE_NO= " + phone);
+				System.out.println("EMAIL= " + email);
+				System.out.println("IFSC = " + ifsc);
+				System.out.println("AMOUNT = " + amount);
+
+				break;
+
 			}
 			c.commit();
 		} catch (Exception e) {
@@ -66,9 +68,30 @@ public class SqlDataAccess implements IDataAccess {
 				if (rs != null) {
 					rs.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
+				if (pt != null) {
+					pt.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (stmt != null) {
 					stmt.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (c != null) {
 					c.close();
 				}
@@ -93,7 +116,7 @@ public class SqlDataAccess implements IDataAccess {
 			stmt = c.createStatement();
 
 			System.out.print("ENTER YOUR NAME");
-			String name1 = sc.nextLine();
+			name = sc.nextLine();
 			System.out.print("ENTER YOUR AGE");
 			age = sc.nextInt();
 			System.out.println("ENTER YOUR DATE OF BIRTH");
@@ -108,10 +131,10 @@ public class SqlDataAccess implements IDataAccess {
 			ifsc = sc.next();
 			System.out.println("ENTER YOUR PASSWORD FOR YOUR ACCOUNT");
 			pass = sc.next();
-			String sql = "INSERT INTO accounts(id,name,age,dob,aadhar_no,phone_no,email,ifsc,password,amount)VALUES (?,?,?,?,?,?,?,?,?,?)";
-			pt = c.prepareStatement(sql);
+			pt = c.prepareStatement(
+					"INSERT INTO accounts(id,name,age,dob,aadhar_no,phone_no,email,ifsc,password,amount)VALUES (?,?,?,?,?,?,?,?,?,?)");
 			pt.setInt(1, id1);
-			pt.setString(2, name1);
+			pt.setString(2, name);
 			pt.setInt(3, age);
 			pt.setString(4, dob);
 			pt.setLong(5, aadhar);
@@ -131,9 +154,21 @@ public class SqlDataAccess implements IDataAccess {
 				if (pt != null) {
 					pt.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (stmt != null) {
 					stmt.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (c != null) {
 					c.close();
 				}
@@ -157,31 +192,30 @@ public class SqlDataAccess implements IDataAccess {
 		PreparedStatement s = null;
 		PreparedStatement pt = null;
 		ResultSet rs = null;
-
+		PreparedStatement pt1 = null;
 		try {
 			Class.forName("org.postgresql.Driver");
 			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/gnanaprakash", "postgres", "root");
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM accounts;");
-
+			pt1 = c.prepareStatement("SELECT * FROM accounts where id=?;");
+			pt1.setInt(1, a_id);
+			rs = pt1.executeQuery();
 			while (rs.next()) {
-				int id = rs.getInt("id");
-				if (a_id == id) {
-					amount = rs.getInt("amount") + amt;
-					s = c.prepareStatement("update accounts set amount=? where id=?");
-					s.setLong(1, amount);
-					s.setInt(2, a_id);
-					s.executeUpdate();
-					String sql = "INSERT INTO transaction_history(accounts_id,amount,type,date)VALUES (?,?,?,?)";
-					pt = c.prepareStatement(sql);
-					pt.setInt(1, a_id);
-					pt.setLong(2, amt);
-					pt.setString(3, "deposit");
-					pt.setString(4, m);
-					pt.executeUpdate();
-					break;
-				}
+
+				amount = rs.getInt("amount") + amt;
+				s = c.prepareStatement("update accounts set amount=? where id=?");
+				s.setLong(1, amount);
+				s.setInt(2, a_id);
+				s.executeUpdate();
+				String sql = "INSERT INTO transaction_history(accounts_id,amount,type,date)VALUES (?,?,?,?)";
+				pt = c.prepareStatement(sql);
+				pt.setInt(1, a_id);
+				pt.setLong(2, amt);
+				pt.setString(3, "deposit");
+				pt.setString(4, m);
+				pt.executeUpdate();
+				break;
 
 			}
 			c.commit();
@@ -195,15 +229,48 @@ public class SqlDataAccess implements IDataAccess {
 				if (s != null) {
 					s.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (pt != null) {
 					pt.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
+				if (pt1 != null) {
+					pt1.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (rs != null) {
 					rs.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (stmt != null) {
 					stmt.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (c != null) {
 					c.close();
 				}
@@ -224,31 +291,30 @@ public class SqlDataAccess implements IDataAccess {
 		Statement stmt = null;
 		PreparedStatement s = null;
 		PreparedStatement pt = null;
+		PreparedStatement pt1 = null;
 		ResultSet rs = null;
 		try {
 			Class.forName("org.postgresql.Driver");
 			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/gnanaprakash", "postgres", "root");
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM accounts;");
+			pt1 = c.prepareStatement("SELECT * FROM accounts where id=?;");
+			pt1.setInt(1, a_id);
+			rs = pt1.executeQuery();
 			while (rs.next()) {
-				int id = rs.getInt("id");
-				if (a_id == id) {
-					amount = rs.getInt("amount") - amt;
-					s = c.prepareStatement("update accounts set amount=? where id=?");
-					s.setLong(1, amount);
-					s.setInt(2, a_id);
-					s.executeUpdate();
-					String sql = "INSERT INTO transaction_history(accounts_id,amount,type,date)VALUES (?,?,?,?)";
-					pt = c.prepareStatement(sql);
-					pt.setInt(1, a_id);
-					pt.setLong(2, amt);
-					pt.setString(3, "withdraw");
-					pt.setString(4, m);
-					pt.executeUpdate();
-
-				}
-
+				amount = rs.getInt("amount") - amt;
+				s = c.prepareStatement("update accounts set amount=? where id=?");
+				s.setLong(1, amount);
+				s.setInt(2, a_id);
+				s.executeUpdate();
+				pt = c.prepareStatement(
+						"INSERT INTO transaction_history(accounts_id,amount,type,date)VALUES (?,?,?,?)");
+				pt.setInt(1, a_id);
+				pt.setLong(2, amt);
+				pt.setString(3, "withdraw");
+				pt.setString(4, m);
+				pt.executeUpdate();
+				break;
 			}
 			c.commit();
 		} catch (Exception e) {
@@ -261,15 +327,48 @@ public class SqlDataAccess implements IDataAccess {
 				if (s != null) {
 					s.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (pt != null) {
 					pt.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
+				if (pt1 != null) {
+					pt1.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (rs != null) {
 					rs.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (stmt != null) {
 					stmt.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (c != null) {
 					c.close();
 				}
@@ -291,20 +390,22 @@ public class SqlDataAccess implements IDataAccess {
 		PreparedStatement s = null;
 		PreparedStatement s1 = null;
 		PreparedStatement s2 = null;
+		PreparedStatement s3 = null;
 		try {
 			Class.forName("org.postgresql.Driver");
 			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/gnanaprakash", "postgres", "root");
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM transaction_history;");
+			s3 = c.prepareStatement("SELECT * FROM transaction_history where accounts_id=?;");
+			s3.setInt(1, id);
+			;
+			rs = s3.executeQuery();
 			while (rs.next()) {
-				int a_id = rs.getInt("accounts_id");
-				if (a_id == id) {
-					int t_id = rs.getInt("transfer_id");
-					s = c.prepareStatement("delete from transfer_transactions where fetch_id = ?");
-					s.setLong(1, t_id);
-					s.executeUpdate();
-				}
+
+				int t_id = rs.getInt("transfer_id");
+				s = c.prepareStatement("delete from transfer_transactions where fetch_id = ?");
+				s.setLong(1, t_id);
+				s.executeUpdate();
 			}
 
 			s1 = c.prepareStatement("delete from accounts where id = ?");
@@ -328,18 +429,57 @@ public class SqlDataAccess implements IDataAccess {
 				if (s != null) {
 					s.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (s1 != null) {
 					s1.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (s2 != null) {
 					s2.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
+				if (s3 != null) {
+					s3.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (rs != null) {
 					rs.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (stmt != null) {
 					stmt.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (c != null) {
 					c.close();
 				}
@@ -369,11 +509,14 @@ public class SqlDataAccess implements IDataAccess {
 		ResultSet rs2 = null;
 		ResultSet rs3 = null;
 		ResultSet rs4 = null;
+		ResultSet rs5 = null;
 
 		PreparedStatement s = null;
 		PreparedStatement s1 = null;
 		PreparedStatement pt = null;
 		PreparedStatement pt1 = null;
+		PreparedStatement pt2 = null;
+		PreparedStatement pt3 = null;
 		PreparedStatement p = null;
 		PreparedStatement p1 = null;
 
@@ -385,96 +528,86 @@ public class SqlDataAccess implements IDataAccess {
 			st2 = c.createStatement();
 			st3 = c.createStatement();
 			st4 = c.createStatement();
-			rs4 = st4.executeQuery("SELECT * FROM accounts;");
+			pt2 = c.prepareStatement("SELECT * FROM accounts where id=?;");
+			pt2.setInt(1, id2);
+			rs4 = pt2.executeQuery();
 			while (rs4.next()) {
-				int id = rs4.getInt("id");
-				if (id == id2) {
-					ifsc = rs4.getString("ifsc");
-					break;
-				}
+				ifsc = rs4.getString("ifsc");
+				break;
 			}
 
-			rs1 = st1.executeQuery("SELECT * FROM accounts;");
 			do {
 				System.out.println("ENTER IFSC FOR " + id2);
 				a_ifsc = sc.next();
 				if (a_ifsc.equals(ifsc)) {
-
+					pt2.setInt(1, id1);
+					rs1 = pt2.executeQuery();
 					while (rs1.next()) {
-						int id = rs1.getInt("id");
+						amount = rs1.getLong("amount") - amt;
 
-						if (id == id1 || id == id2) {
+						s = c.prepareStatement("update accounts set amount=? where id=?");
+						s.setLong(1, amount);
+						s.setInt(2, id1);
+						s.executeUpdate();
 
-							if (id == id1) {
-								amount = rs1.getLong("amount") - amt;
+						pt = c.prepareStatement(
+								"INSERT INTO transaction_history(accounts_id,amount,type,date)VALUES (?,?,?,?)");
+						pt.setInt(1, id1);
+						pt.setLong(2, amt);
+						pt.setString(3, "transfer");
+						pt.setString(4, m);
+						pt.executeUpdate();
+						pt3 = c.prepareStatement("SELECT * FROM transaction_history where accounts_id=?;");
+						pt3.setInt(1, id1);
+						rs2 = pt3.executeQuery();
 
-								s = c.prepareStatement("update accounts set amount=? where id=?");
-								s.setLong(1, amount);
-								s.setInt(2, id1);
-								s.executeUpdate();
-								String sql = "INSERT INTO transaction_history(accounts_id,amount,type,date)VALUES (?,?,?,?)";
-								pt = c.prepareStatement(sql);
-								pt.setInt(1, id1);
-								pt.setLong(2, amt);
-								pt.setString(3, "transfer");
-								pt.setString(4, m);
-								pt.executeUpdate();
+						while (rs2.next()) {
 
-								rs2 = st2.executeQuery("SELECT * FROM transaction_history;");
-								while (rs2.next()) {
-									int a_id = rs2.getInt("accounts_id");
-									if (a_id == id1) {
-										transfer_id = rs2.getLong("transfer_id");
-
-									}
-
-								}
-
-								pt1 = c.prepareStatement(
-										"INSERT INTO transfer_transactions(fetch_id,from_id,to_id,status)VALUES (?,?,?,?)");
-								pt1.setLong(1, transfer_id);
-								pt1.setInt(2, id1);
-								pt1.setInt(3, id2);
-								pt1.setString(4, "debited");
-								pt1.executeUpdate();
-
-							} else {
-								amount = rs1.getLong("amount") + amt;
-
-								s1 = c.prepareStatement("update accounts set amount=? where id=?");
-								s1.setLong(1, amount);
-								s1.setInt(2, id2);
-								s1.executeUpdate();
-								String sql = "INSERT INTO transaction_history(accounts_id,amount,type,date)VALUES (?,?,?,?)";
-								p = c.prepareStatement(sql);
-								p.setInt(1, id2);
-								p.setLong(2, amt);
-								p.setString(3, "transfer");
-								p.setString(4, m);
-								p.executeUpdate();
-								rs3 = st3.executeQuery("SELECT * FROM transaction_history;");
-								while (rs3.next()) {
-									int a_id = rs3.getInt("accounts_id");
-									if (a_id == id2) {
-										transfer_id = rs3.getLong("transfer_id");
-
-									}
-
-								}
-
-								p1 = c.prepareStatement(
-										"INSERT INTO transfer_transactions(fetch_id,from_id,to_id,status)VALUES (?,?,?,?)");
-
-								p1.setLong(1, transfer_id);
-								p1.setInt(2, id1);
-								p1.setInt(3, id2);
-								p1.setString(4, "credited");
-								p1.executeUpdate();
-
-							}
+							transfer_id = rs2.getLong("transfer_id");
 
 						}
 
+						pt1 = c.prepareStatement(
+								"INSERT INTO transfer_transactions(fetch_id,from_id,to_id,status)VALUES (?,?,?,?)");
+						pt1.setLong(1, transfer_id);
+						pt1.setInt(2, id1);
+						pt1.setInt(3, id2);
+						pt1.setString(4, "debited");
+						pt1.executeUpdate();
+						break;
+					}
+					pt2.setInt(1, id2);
+					rs5 = pt2.executeQuery();
+					while (rs5.next()) {
+						amount = rs5.getLong("amount") + amt;
+
+						s1 = c.prepareStatement("update accounts set amount=? where id=?");
+						s1.setLong(1, amount);
+						s1.setInt(2, id2);
+						s1.executeUpdate();
+						p = c.prepareStatement(
+								"INSERT INTO transaction_history(accounts_id,amount,type,date)VALUES (?,?,?,?)");
+						p.setInt(1, id2);
+						p.setLong(2, amt);
+						p.setString(3, "transfer");
+						p.setString(4, m);
+						p.executeUpdate();
+						pt3.setInt(1, id2);
+						rs3 = pt3.executeQuery();
+						while (rs3.next()) {
+							transfer_id = rs3.getLong("transfer_id");
+					
+						}
+
+						p1 = c.prepareStatement(
+								"INSERT INTO transfer_transactions(fetch_id,from_id,to_id,status)VALUES (?,?,?,?)");
+
+						p1.setLong(1, transfer_id);
+						p1.setInt(2, id1);
+						p1.setInt(3, id2);
+						p1.setString(4, "credited");
+						p1.executeUpdate();
+						break;
 					}
 
 				} else {
@@ -492,45 +625,158 @@ public class SqlDataAccess implements IDataAccess {
 				if (s != null) {
 					s.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (s1 != null) {
 					s1.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (pt != null) {
 					pt.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (pt1 != null) {
 					pt1.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
+				if (pt2 != null) {
+					pt2.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
+				if (pt3 != null) {
+					pt3.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+
+			try {
 				if (p != null) {
 					p.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (p1 != null) {
 					p1.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (rs1 != null) {
 					rs1.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (rs2 != null) {
 					rs2.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (rs3 != null) {
 					rs3.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (rs4 != null) {
 					rs4.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
+				if (rs5 != null) {
+					rs5.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (st1 != null) {
 					st1.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (st2 != null) {
 					st2.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
+
 				if (st3 != null) {
 					st3.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (st4 != null) {
 					st4.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (c != null) {
 					c.close();
 				}
@@ -652,19 +898,30 @@ public class SqlDataAccess implements IDataAccess {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		} finally {
-			s.close();
-			stmt.close();
-			c.close();
+
 			try {
 				if (s != null) {
 					s.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (stmt != null) {
 					stmt.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (c != null) {
 					c.close();
 				}
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -680,6 +937,7 @@ public class SqlDataAccess implements IDataAccess {
 		Statement stmt1 = null;
 		Statement stmt2 = null;
 		ResultSet rs1 = null;
+		PreparedStatement pt = null;
 
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -695,49 +953,81 @@ public class SqlDataAccess implements IDataAccess {
 
 				switch (opt) {
 				case 1:
-					rs1 = stmt1.executeQuery("select *  from transaction_history  \n" + "where type='deposit'");
+					pt = c.prepareStatement(
+							"SELECT *  FROM transaction_history  where type='deposit' and accounts_id=?;");
+					pt.setInt(1, a_id);
+					rs1 = pt.executeQuery();
 					while (rs1.next()) {
-						int id = rs1.getInt("accounts_id");
 
-						if (id == a_id) {
-							amount = rs1.getLong("amount");
-							String date = rs1.getString("date");
+						amount = rs1.getLong("amount");
+						String date = rs1.getString("date");
 
-							System.out.println(amount);
-							System.out.println(date);
-							System.out.println("deposit");
+						System.out.println(amount);
+						System.out.println(date);
+						System.out.println("deposit");
 
-						}
 					}
 					break;
 				case 2:
-					rs1 = stmt1.executeQuery("select *  from transaction_history  \n" + "where type='withdraw'");
+					pt = c.prepareStatement(
+							"SELECT *  FROM transaction_history  where type='withdraw' and accounts_id=?;");
+					pt.setInt(1, a_id);
+					rs1 = pt.executeQuery();
 					while (rs1.next()) {
-						int id = rs1.getInt("accounts_id");
+						amount = rs1.getLong("amount");
+						String date = rs1.getString("date");
+						String type = rs1.getString("type");
+						System.out.println(amount);
+						System.out.println(date);
+						System.out.println(type);
 
-						if (id == a_id) {
-							amount = rs1.getLong("amount");
-							String date = rs1.getString("date");
-							String type = rs1.getString("type");
-							System.out.println(amount);
-							System.out.println(date);
-							System.out.println(type);
-
-						}
 					}
 					break;
 				case 3:
-					rs1 = stmt1.executeQuery("select accounts_id,amount,type,date,transfer_id,from_id,to_id,status\n"
-							+ "FROM transaction_history  \n" + "RIGHT JOIN transfer_transactions\n"
-							+ "ON transaction_history .transfer_id = transfer_transactions.fetch_id;  ");
+					pt = c.prepareStatement(
+							"select accounts_id,amount,type,date,transfer_id,from_id,to_id,status FROM transaction_history RIGHT JOIN transfer_transactions \n"
+									+ "ON transaction_history .transfer_id = transfer_transactions.fetch_id\n"
+									+ "where transaction_history .accounts_id=?;");
+					pt.setInt(1, a_id);
+					rs1 = pt.executeQuery();
 					while (rs1.next()) {
-						int id = rs1.getInt("accounts_id");
-						String type = rs1.getString("type");
 
-						if (id == a_id) {
+						String type = rs1.getString("type");
+						amount = rs1.getLong("amount");
+						String date = rs1.getString("date");
+
+						System.out.println("AMOUNT:" + amount);
+						System.out.println("DATE:" + date);
+						System.out.println("TYPE:" + type);
+						String status = rs1.getString("status");
+						int to_id = rs1.getInt("to_id");
+						int from_id = rs1.getInt("from_id");
+						System.out.println("FROM_ID:" + from_id);
+						System.out.println("TO_ID:" + to_id);
+						System.out.println("STATUS:" + status);
+
+					}
+					break;
+				case 4:
+					pt = c.prepareStatement("SELECT * FROM transaction_history FULL OUTER JOIN transfer_transactions\n"
+							+ "ON transaction_history .transfer_id =transfer_transactions .fetch_id\n"
+							+ "where transaction_history .accounts_id=?;");
+					pt.setInt(1, a_id);
+					rs1 = pt.executeQuery();
+
+					while (rs1.next()) {
+						String type = rs1.getString("type");
+						if (type.equals("deposit") || type.equals("withdraw")) {
 							amount = rs1.getLong("amount");
 							String date = rs1.getString("date");
-							t_id = rs1.getLong("transfer_id");
+
+							System.out.println("AMOUNT:" + amount);
+							System.out.println("DATE:" + date);
+							System.out.println("TYPE:" + type);
+
+						} else {
+							amount = rs1.getLong("amount");
+							String date = rs1.getString("date");
 							System.out.println("AMOUNT:" + amount);
 							System.out.println("DATE:" + date);
 							System.out.println("TYPE:" + type);
@@ -748,41 +1038,6 @@ public class SqlDataAccess implements IDataAccess {
 							System.out.println("TO_ID:" + to_id);
 							System.out.println("STATUS:" + status);
 
-						}
-					}
-					break;
-				case 4:
-					rs1 = stmt1.executeQuery(
-							"SELECT *  \n" + "FROM transaction_history  \n" + "FULL OUTER JOIN transfer_transactions \n"
-									+ "ON transaction_history .transfer_id =transfer_transactions .fetch_id;  ");
-
-					while (rs1.next()) {
-						int id = rs1.getInt("accounts_id");
-
-						if (id == a_id) {
-							String type = rs1.getString("type");
-							if (type.equals("deposit") || type.equals("withdraw")) {
-								amount = rs1.getLong("amount");
-								String date = rs1.getString("date");
-
-								System.out.println("AMOUNT:" + amount);
-								System.out.println("DATE:" + date);
-								System.out.println("TYPE:" + type);
-
-							} else {
-								amount = rs1.getLong("amount");
-								String date = rs1.getString("date");
-								System.out.println("AMOUNT:" + amount);
-								System.out.println("DATE:" + date);
-								System.out.println("TYPE:" + type);
-								String status = rs1.getString("status");
-								int to_id = rs1.getInt("to_id");
-								int from_id = rs1.getInt("from_id");
-								System.out.println("FROM_ID:" + from_id);
-								System.out.println("TO_ID:" + to_id);
-								System.out.println("STATUS:" + status);
-
-							}
 						}
 					}
 
@@ -798,21 +1053,44 @@ public class SqlDataAccess implements IDataAccess {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		} finally {
-			rs1.close();
-			stmt1.close();
-			stmt2.close();
-			c.close();
+			try {
+				if (pt != null) {
+					pt.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
 			try {
 				if (rs1 != null) {
 					rs1.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 
 				if (stmt1 != null) {
 					stmt1.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (stmt2 != null) {
 					stmt2.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (c != null) {
 					c.close();
 				}
@@ -825,6 +1103,7 @@ public class SqlDataAccess implements IDataAccess {
 	}
 
 	public static void main(String[] args) throws Exception {
+
 	}
 
 }

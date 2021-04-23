@@ -9,7 +9,7 @@ import java.util.*;
 
 public class account {
 	static String password;
-
+    static int id;
 	public static void main(String[] args) throws Exception {
 
 		Scanner sc = new Scanner(System.in);
@@ -44,9 +44,21 @@ public class account {
 				if (rs != null) {
 					rs.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (stmt != null) {
 					stmt.close();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+				System.exit(0);
+			}
+			try {
 				if (c != null) {
 					c.close();
 				}
@@ -93,16 +105,18 @@ public class account {
 					b.transferAccount(a_id, t_id, amt);
 					break;
 				case 6:
-
-					b.editAccount(a_id);
+					System.out.println("enter the  id_no");
+					 id=sc.nextInt();
+					b.editAccount(id);
 					break;
 				case 7:
 
 					b.transactionHistory(a_id);
 					break;
 				case 8:
-
-					b.createAccount(a_id);
+					System.out.println("enter the  id_no");
+					 id=sc.nextInt();
+					b.createAccount(id);
 					break;
 				}
 			} while (opt != 0);
